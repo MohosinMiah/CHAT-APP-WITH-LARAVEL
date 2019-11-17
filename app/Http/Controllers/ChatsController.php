@@ -65,13 +65,13 @@ public function fetchMessages()
  * @param  Request $request
  * @return Response
  */
-public function sendMessage()
+public function sendMessage(Request $request)
 {
   $user = Auth::user();
 
   $message = $user->messages()->create([
-    // 'message' => $request->input('message')
-    'message' => "Bangladesh"
+    'message' => $request->input('message')
+   
   ]);
 
 //   broadcast(new MessageSent($user, $message))->toOthers();

@@ -8,6 +8,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+const axios = require('axios');
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -30,28 +32,66 @@ Vue.use(VueChatScroll)
 
 const app = new Vue({
     el: '#app',
-    data:{
-    message : "name",
-    chat :{
-           messages : ["Hello","How are you"]
-    },
+    data: {
+        message: "",
+        chat: {
+            messages: [],
+            user: [],
+            color: [],
+            time: [],
+        },
 
+        typing: '',
+        numberOfUsers: 0
     },
-
-    methods:{
-        send(){
-            console.log(this.message);
-            this.chat.messages.push(this.message);
-            this.chat.messages.forEach(element => {
-                console.log(element);
-            });
-            console.log(this.chat.messages);
+    watch: {
+        message() {
+            Echo.private('chat')
+                .whisper('typing', {
+                    name: this.message
+                });
         }
     },
-    mounted() {
-       console.log(this.chat.messages);
-    }
-    
+    methods: {
+        send() {
+            if (this.message.length != 0) {
+                this.chat.messages.push(this.message);
 
-    
+                this.chat.color.push('success');
+                this.chat.user.push('you');
+                this.chat.time.push(this.getTime());
+                axios.post('/send', {
+                    message: this.message
+
+                })
+                    .then(response => {
+                        // console.log(response);
+                        this.message = ''
+                    })
+                    .catch(error => {
+                        // console.log(error);
+                    });
+                // console.log(this.chat.messages);
+            }
+
+        },
+        getTime() {
+            let time = new Date();
+            return time.getHours() + ':' + time.getMinutes();
+        },
+    },
+
+    mounted() {
+        Echo.private('chat')
+            .listen('MessageSent', (e) => {
+
+                this.chat.messages.push(e.message.message);
+                this.chat.color.push('warning');
+                this.chat.user.push(e.user.name);
+                // console.log(e.message.message);
+            });
+    },
+
+
+
 });

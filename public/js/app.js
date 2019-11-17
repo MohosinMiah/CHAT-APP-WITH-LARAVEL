@@ -47748,7 +47748,13 @@ var render = function() {
       { staticClass: "list-group-item", class: _vm.className },
       [_vm._t("default")],
       2
-    )
+    ),
+    _vm._v(" "),
+    _c("span", { attrs: { id: "time" } }, [_vm._v(_vm._s(_vm.time))]),
+    _vm._v(" "),
+    _c("small", { staticClass: "badge float-right", class: _vm.badgeClass }, [
+      _vm._v(_vm._s(_vm.user))
+    ])
   ])
 }
 var staticRenderFns = []
@@ -59913,6 +59919,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -59922,6 +59930,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
  */
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+
 
 Vue.component('message', __webpack_require__(/*! ./components/Message.vue */ "./resources/js/components/Message.vue")["default"]);
 
@@ -59935,23 +59944,57 @@ Vue.use(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_0___default.a);
 var app = new Vue({
   el: '#app',
   data: {
-    message: "name",
+    message: "",
     chat: {
-      messages: ["Hello", "How are you"]
+      messages: [],
+      user: [],
+      color: [],
+      time: []
+    },
+    typing: '',
+    numberOfUsers: 0
+  },
+  watch: {
+    message: function message() {
+      Echo["private"]('chat').whisper('typing', {
+        name: this.message
+      });
     }
   },
   methods: {
     send: function send() {
-      console.log(this.message);
-      this.chat.messages.push(this.message);
-      this.chat.messages.forEach(function (element) {
-        console.log(element);
-      });
-      console.log(this.chat.messages);
+      var _this = this;
+
+      if (this.message.length != 0) {
+        this.chat.messages.push(this.message);
+        this.chat.color.push('success');
+        this.chat.user.push('you');
+        this.chat.time.push(this.getTime());
+        axios.post('/send', {
+          message: this.message
+        }).then(function (response) {
+          // console.log(response);
+          _this.message = '';
+        })["catch"](function (error) {// console.log(error);
+        }); // console.log(this.chat.messages);
+      }
+    },
+    getTime: function getTime() {
+      var time = new Date();
+      return time.getHours() + ':' + time.getMinutes();
     }
   },
   mounted: function mounted() {
-    console.log(this.chat.messages);
+    var _this2 = this;
+
+    Echo["private"]('chat').listen('MessageSent', function (e) {
+      _this2.chat.messages.push(e.message.message);
+
+      _this2.chat.color.push('warning');
+
+      _this2.chat.user.push(e.user.name); // console.log(e.message.message);
+
+    });
   }
 });
 

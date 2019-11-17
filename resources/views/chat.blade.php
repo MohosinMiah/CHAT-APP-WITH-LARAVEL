@@ -24,9 +24,9 @@
                          <message
 				  v-for="value,index in chat.messages"
 				 :key=value.index  
-				  {{--  :color= chat.color[index]
+			      :color= chat.color[index]
 				  :user = chat.user[index]
-				  :time = chat.time[index]    --}}
+				  :time = chat.time[index]   
 				  >
 				 @{{ value }}
 				  </message>
