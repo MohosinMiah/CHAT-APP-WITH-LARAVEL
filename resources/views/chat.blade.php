@@ -16,13 +16,20 @@
 	<div class="container">
 		<div class="row" id="app">
 			<div class="offset-4 col-4 offset-sm-1 col-sm-10">
+                <li class="list-group-item active">CHAT BOX</li>
                 <ul class="list-group">
-                    <li class="list-group-item active">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-				  <input type="text" class="form-control" placeholder="Type your message here..." v-model='message' @keyup.enter='send'>
+                        <li class="list-group-item" ></li>
+                         <message
+				  v-for="value,index in chat.messages"
+				 :key=value.index  
+				  {{--  :color= chat.color[index]
+				  :user = chat.user[index]
+				  :time = chat.time[index]    --}}
+				  >
+				 @{{ value }}
+				  </message>
+                </ul>
+                <input type="text" class="form-control" placeholder="Type your message here..." v-model='message' @keyup.enter='send'>
 			</div>
 		</div>
 	</div>
