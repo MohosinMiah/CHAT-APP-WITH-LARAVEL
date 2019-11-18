@@ -10,6 +10,16 @@ window.Vue = require('vue');
 
 const axios = require('axios');
 
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/index.css';
+ 
+Vue.use(VueToast);
+ 
+// Close all opened toast immediately
+Vue.$toast.clear();
+
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -35,6 +45,7 @@ const app = new Vue({
     data: {
         message: "",
         type : '',
+        numberOfUser : 0,
         chat: {
             messages: [],
             user: [],
@@ -43,7 +54,7 @@ const app = new Vue({
         },
 
         typing: '',
-        numberOfUsers: 0
+        numberOfUsers : '',
     },
     watch: {
         message() {
@@ -100,7 +111,31 @@ const app = new Vue({
                 }
   
       });
-    
+
+      Echo.join('chat')
+      .here((users) => {
+
+        this.numberOfUser = users.length;
+
+        console.log(users);
+      })
+      .joining((user) => {
+        Vue.$toast.open(user.name+' Join With Us');
+
+        this.numberOfUser += 1;
+
+          console.log(user.name);
+      })
+      .leaving((user) => {
+
+        this.numberOfUser -= 1;
+        Vue.$toast.open(user.name+' Leve');
+
+          console.log(user.name);
+      });
+
+      Vue.$toast.clear();
+
     },
 
 

@@ -20,6 +20,7 @@
 			<div class="offset-4 col-4 offset-sm-1 col-sm-10">
 				<li class="list-group-item active">CHAT BOX </li>
 				<p>@{{ type }}</p>
+				<span class="badge badge-success">@{{ numberOfUser }}</span>
                 <ul class="list-group" v-chat-scroll>
                         <li class="list-group-item" ></li>
                          <message
