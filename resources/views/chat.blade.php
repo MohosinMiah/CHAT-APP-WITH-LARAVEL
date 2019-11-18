@@ -18,7 +18,8 @@
 	<div class="container">
 		<div class="row" id="app">
 			<div class="offset-4 col-4 offset-sm-1 col-sm-10">
-                <li class="list-group-item active">CHAT BOX</li>
+				<li class="list-group-item active">CHAT BOX </li>
+				<p>@{{ type }}</p>
                 <ul class="list-group" v-chat-scroll>
                         <li class="list-group-item" ></li>
                          <message
@@ -27,8 +28,10 @@
 			      :color= chat.color[index]
 				  :user = chat.user[index]
 				  :time = chat.time[index]   
+				  :type = type
 				  >
 				 @{{ value }}
+				 
 				  </message>
                 </ul>
                 <input type="text" class="form-control" placeholder="Type your message here..." v-model='message' @keyup.enter='send'>

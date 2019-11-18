@@ -59945,6 +59945,7 @@ var app = new Vue({
   el: '#app',
   data: {
     message: "",
+    type: '',
     chat: {
       messages: [],
       user: [],
@@ -59994,6 +59995,12 @@ var app = new Vue({
 
       _this2.chat.user.push(e.user.name); // console.log(e.message.message);
 
+    }).listenForWhisper('typing', function (e) {
+      if (e.name != "") {
+        _this2.type = "Typing...";
+      } else {
+        _this2.type = "";
+      }
     });
   }
 });
